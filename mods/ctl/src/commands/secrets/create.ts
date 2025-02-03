@@ -1,6 +1,7 @@
+/* eslint-disable import/no-unresolved */
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
- * http://github.com/fonoster/plugin-funcs
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
  *
@@ -16,48 +17,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import "../../config";
-import {Command, flags} from "@oclif/command";
-import {CLIError} from "@oclif/errors";
-import {getProjectConfig} from "../../config";
-import {ProjectGuard} from "../../decorators/project_guard";
+import * as SDK from "@fonoster/sdk";
+import { CreateSecretRequest } from "@fonoster/types";
+import { confirm, input, password } from "@inquirer/prompts";
+import { AuthenticatedCommand } from "../../AuthenticatedCommand";
+import errorHandler from "../../errorHandler";
 
-const getStdin = require("get-stdin-with-tty");
-const Secrets = require("@fonoster/secrets");
+export default class Create extends AuthenticatedCommand<typeof Create> {
+  static override readonly description =
+    "add a new Secret to the active Workspace";
+  static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
 
-export default class CreateCommand extends Command {
-  static description = "create a Fonoster secret.";
+  public async run(): Promise<void> {
+    this.log(
+      "This utility will help you add a new Secret to the active Workspace."
+    );
+    this.log("Press ^C at any time to quit.");
 
-  static args = [{name: "name"}];
-  static flags = {
-    help: flags.help({char: "h"}),
-    "from-literal": flags.string({char: "l", description: "pass from literal"}),
-    "from-stdin": flags.boolean({char: "s", description: "pass from stdin"})
-  };
+    const answers = {
+      name: await input({
+        message: "Name",
+        required: true
+      }),
+      secret: await password({
+        message: "Secret"
+      }),
+      confirm: await confirm({
+        message: "Ready?"
+      })
+    };
 
-  @ProjectGuard()
-  async run() {
-    const secretsManager = new Secrets(getProjectConfig());
-
-    const {args, flags} = this.parse(CreateCommand);
-
-    let secret = flags["from-stdin"] ? await getStdin() : flags["from-literal"];
-
-    if (!args.name || !secret) {
-      throw new CLIError(
-        "Cant create a secret without a name or a secret-value. Type [secrets:create --help] for more information"
-      );
+    if (!answers.confirm) {
+      this.log("Aborted!");
+      return;
     }
 
     try {
-      const result = await secretsManager.createSecret({
-        name: args.name,
-        secret
-      });
+      const client = await this.createSdkClient();
+      const secrets = new SDK.Secrets(client);
 
-      console.log(result.name);
+      await secrets.createSecret(answers as unknown as CreateSecretRequest);
+
+      this.log("Done!");
     } catch (e) {
-      throw new CLIError(e.message);
+      errorHandler(e, this.error.bind(this));
     }
   }
 }

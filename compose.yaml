@@ -1,0 +1,178 @@
+services:
+  apiserver:
+    image: fonoster/apiserver:latest
+    restart: unless-stopped
+    environment:
+      APP_URL: ${APP_URL}
+      DATABASE_URL: ${DATABASE_URL}
+      OWNER_NAME: ${OWNER_NAME}
+      OWNER_EMAIL: ${OWNER_EMAIL}
+      OWNER_PASSWORD: ${OWNER_PASSWORD}
+      CLOAK_ENCRYPTION_KEY: ${CLOAK_ENCRYPTION_KEY}
+      IDENTITY_ISSUER: ${IDENTITY_ISSUER}
+      IDENTITY_DATABASE_URL: ${IDENTITY_DATABASE_URL}
+      IDENTITY_WORKSPACE_INVITATION_URL: ${IDENTITY_WORKSPACE_INVITATION_URL}
+      IDENTITY_WORKSPACE_INVITATION_FAIL_URL: ${IDENTITY_WORKSPACE_INVITATION_FAIL_URL}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_SENDER: ${SMTP_SENDER}
+      SMTP_AUTH_USER: ${SMTP_AUTH_USER}
+      SMTP_AUTH_PASS: ${SMTP_AUTH_PASS}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
+      INFLUXDB_URL: ${INFLUXDB_URL}
+      INFLUXDB_INIT_USERNAME: ${INFLUXDB_INIT_USERNAME}
+      INFLUXDB_INIT_PASSWORD: ${INFLUXDB_INIT_PASSWORD}
+      INFLUXDB_INIT_ORG: ${INFLUXDB_INIT_ORG}
+      INFLUXDB_INIT_TOKEN: ${INFLUXDB_INIT_TOKEN}
+      ASTERISK_ARI_PROXY_URL: ${ASTERISK_ARI_PROXY_URL}
+      ASTERISK_ARI_USERNAME: ${ASTERISK_ARI_USERNAME}
+      ASTERISK_ARI_SECRET: ${ASTERISK_ARI_SECRET}
+      NATS_URL: ${NATS_URL}
+      LOGS_LEVEL: ${LOGS_LEVEL}
+      LOGS_TRANSPORT: ${LOGS_TRANSPORT}
+      LOGS_FORMAT: ${LOGS_FORMAT}
+    expose:
+      - 50051:50051
+    volumes:
+      - ./config/keys:/opt/fonoster/keys:ro
+      - ./config/integrations.json:/opt/fonoster/integrations.json:ro
+
+  autopilot:
+    image: fonoster/autopilot:latest
+    restart: unless-stopped
+    expose:
+      - 50061
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AWS_S3_ACCESS_KEY_ID: ${AWS_S3_ACCESS_KEY_ID}
+      AWS_S3_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
+      AWS_S3_REGION: ${AWS_S3_REGION}
+      AWS_S3_ENDPOINT: ${AWS_S3_ENDPOINT}
+      KNOWLEDGE_BASE_ENABLED: ${KNOWLEDGE_BASE_ENABLED}
+      UNSTRUCTURED_API_KEY: ${UNSTRUCTURED_API_KEY}
+      UNSTRUCTURED_API_URL: ${UNSTRUCTURED_API_URL}
+      LOGS_LEVEL: ${LOGS_LEVEL}
+      LOGS_FORMAT: ${LOGS_FORMAT}
+      LOGS_TRANSPORT: ${LOGS_TRANSPORT}
+      CONVERSATION_PROVIDER: "api"
+      INTEGRATIONS_FILE: /opt/fonoster/integrations.json
+    volumes:
+      - ./config/integrations.json:/opt/fonoster/integrations.json:ro
+
+  routr:
+    image: fonoster/routr-one:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${ROUTR_DATABASE_URL}
+      START_INTERNAL_DB: "false"
+      EXTERNAL_ADDRS: ${DOCKER_HOST_ADDRESS}
+      LOGS_LEVEL: ${LOGS_LEVEL}
+      LOGS_TRANSPORT: ${LOGS_TRANSPORT}
+      LOGS_FORMAT: ${LOGS_FORMAT}
+      RTPENGINE_HOST: ${ROUTR_RTPENGINE_HOST}
+      NATS_PUBLISHER_ENABLED: "true"
+      NATS_PUBLISHER_URL: ${NATS_URL}
+    expose:
+      - 51907
+      - 51908
+    ports:
+      - 5060:5060/udp
+      - 5060-5063:5060-5063
+    volumes:
+      - routrdb:/var/lib/postgresql/data
+
+  # RTPEngine uses a range of ports to handle RTP traffic. Because exposing a large range of ports 
+  # is not possible in Docker, we need to use network_mode: host.
+  #
+  # Unfortunately, network_mode: host is not supported for Windows or Mac.
+  # In those cases, we need to use a different approach.
+  #
+  # By default we are opening a small range of ports (10000-10100) to handle RTP traffic.
+  # However, this is not enough for production environments.
+  #
+  # We recommend that when using Linux you use network_mode: host and remove the ports section.
+  rtpengine:
+    image: fonoster/rtpengine:latest
+    restart: unless-stopped
+    platform: linux/x86_64
+    ports: 
+      - 10000-10100:10000-10100/udp
+      - 8080:8080
+    environment:
+      PUBLIC_IP: ${DOCKER_HOST_ADDRESS}
+      PORT_MIN: 10000
+      PORT_MAX: 10100
+
+  asterisk:
+    image: fonoster/asterisk:latest
+    restart: unless-stopped
+    environment:
+      ARI_PROXY_URL: ${ASTERISK_ARI_PROXY_URL}
+      ARI_USERNAME: ${ASTERISK_ARI_USERNAME}
+      ARI_SECRET: ${ASTERISK_ARI_SECRET}
+      SIPPROXY_HOST: ${ASTERISK_SIPPROXY_HOST}
+      SIPPROXY_PORT: ${ASTERISK_SIPPROXY_PORT}
+      SIPPROXY_USERNAME: ${ASTERISK_SIPPROXY_USERNAME}
+      SIPPROXY_SECRET: ${ASTERISK_SIPPROXY_SECRET}
+      RTP_PORT_START: ${ASTERISK_RTP_PORT_START}
+      RTP_PORT_END: ${ASTERISK_RTP_PORT_END}
+      DTMF_MODE: ${ASTERISK_DTMF_MODE}
+      CODECS: ${ASTERISK_CODECS}
+    expose:
+      - 6060
+
+  postgres:
+    image: postgres:16.2-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: UTC
+      PGTZ: UTC
+    expose:
+      - 5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  influxdb:
+    image: influxdb:2
+    restart: unless-stopped
+    expose:
+      - 8086
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_INIT_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_INIT_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_INIT_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: calls
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_INIT_TOKEN}
+    volumes:
+      - influxdb:/var/lib/influxdb2
+
+  nats:
+    image: nats:latest
+    restart: unless-stopped
+    expose:
+      - 4222
+
+  envoy:
+    image: envoyproxy/envoy:v1.31.0
+    restart: unless-stopped
+    volumes:
+      - ./config/envoy.yaml:/etc/envoy/envoy.yaml:ro
+      # If using letsencrypt, you need to mount the letsencrypt directory
+      # by uncommenting the following line and changing the domain name to match your domain.
+      #
+      # Symbolic links will not work here!!!
+      #
+      # - ./path/to/letsencrypt:/etc/letsencrypt:ro
+    ports:
+      - 8449:8449
+      # If using letsencrypt, you need to expose port 443 and remove the default HTTP port (8449)
+      # - 443:443
+
+volumes:
+  db:
+  routrdb:
+  influxdb:

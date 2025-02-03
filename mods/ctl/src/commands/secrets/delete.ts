@@ -1,6 +1,7 @@
+/* eslint-disable import/no-unresolved */
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
- * http://github.com/fonoster/plugin-funcs
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
  *
@@ -16,35 +17,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import "../../config";
-import {Command} from "@oclif/command";
-import {CliUx} from "@oclif/core";
-import {getProjectConfig} from "../../config";
-import {ProjectGuard} from "../../decorators/project_guard";
-import {CLIError} from "@oclif/errors";
+import * as SDK from "@fonoster/sdk";
+import { Args } from "@oclif/core";
+import { AuthenticatedCommand } from "../../AuthenticatedCommand";
 
-const Secrets = require("@fonoster/secrets");
+export default class Delete extends AuthenticatedCommand<typeof Delete> {
+  static override readonly description =
+    "delete a Secret from the active Workspace";
+  static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
+  static override readonly args = {
+    ref: Args.string({
+      description: "the Secret reference",
+      required: true
+    })
+  };
 
-export default class DeleteCommand extends Command {
-  static description = "remove Fonoster secret";
-  static aliases = ["secrets:del", "secrets:rm"];
-  static args = [{name: "name"}];
-
-  @ProjectGuard()
-  async run() {
-    const {args} = this.parse(DeleteCommand);
-    const secretsManager = new Secrets(getProjectConfig());
-
-    if (!args.name) throw new CLIError("You must specify a secret name");
-
-    try {
-      CliUx.ux.action.start("Removing the secret...");
-
-      await secretsManager.deleteSecret(args.name);
-      await CliUx.ux.wait(1000);
-      CliUx.ux.action.stop("Done");
-    } catch (e) {
-      console.error("Unable to remove!");
-    }
+  public async run(): Promise<void> {
+    const { args } = await this.parse(Delete);
+    const { ref } = args;
+    const client = await this.createSdkClient();
+    const secrets = new SDK.Secrets(client);
+    await secrets.deleteSecret(ref);
+    this.log("Done!");
   }
 }

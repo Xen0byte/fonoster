@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
  * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
@@ -8,7 +8,7 @@
  * you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *    https://opensource.org/licenses/MIT
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface ClientOptions {
-  endpoint?: string;
-  bucket?: string;
-  accessKeyId?: string;
-  accessKeySecret?: string;
-}
+type NumberPreconditionsCheck = (request: {
+  appRef?: string;
+  agentAor?: string;
+}) => Promise<void>;
 
-export interface WebClientOptions {
-  endpoint?: string;
-  bucket?: string;
-  accessKeyId: string;
-  accessKeySecret: string;
-}
+export { NumberPreconditionsCheck };

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
+ * Copyright (C) 2023 by Fonoster Inc (https://fonoster.com)
  * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
@@ -16,34 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import winston from "winston";
 import fluentLogger from "fluent-logger";
-const fluentTransport = fluentLogger.support.winstonTransport();
+import winston from "winston";
 
-const fluent = new fluentTransport(
-  `${process.env.LOG_OPT_TAG_PREFIX}.fonoster`,
-  {
-    host: process.env.LOGS_DRIVER_HOST,
-    port: process.env.LOGS_DRIVER_PORT,
-    timeout: 3.0,
-    requireAckResponse: true
-  }
-);
+const FluentTransport = fluentLogger.support.winstonTransport();
+
+const LOGS_DRIVER_HOST = process.env.LOGS_DRIVER_HOST;
+const LOGS_DRIVER_PORT = process.env.LOGS_DRIVER_PORT || 24224;
+const LOGS_OPT_TAG_PREFIX = process.env.LOGS_OPT_TAG_PREFIX || "fonoster-logs";
+const LOGS_FORMAT = process.env.LOGS_FORMAT || "json";
+const LOGS_LEVEL = process.env.LOGS_LEVEL || "info";
+const LOGS_TRANSPORT = process.env.LOGS_TRANSPORT || "console";
+
+const fluent = new FluentTransport(`${LOGS_OPT_TAG_PREFIX}`, {
+  host: LOGS_DRIVER_HOST,
+  port: LOGS_DRIVER_PORT,
+  timeout: 3.0,
+  requireAckResponse: false
+});
 
 const format =
-  process.env.LOGS_FORMAT === "json"
-    ? winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.json()
-    )
+  LOGS_FORMAT === "json"
+    ? winston.format.combine(winston.format.timestamp(), winston.format.json())
     : winston.format.combine(
-      winston.format.colorize(),
-      winston.format.simple()
-    );
-const level = process.env.LOGS_LEVEL ? process.env.LOGS_LEVEL : "info";
-const transports =
-  process.env.LOGS_TRANSPORT === "fluent"
-    ? [fluent]
-    : [new winston.transports.Console()];
+        winston.format.colorize(),
+        winston.format.simple()
+      );
 
-export { format, level, transports, fluent }
+const transports =
+  LOGS_TRANSPORT === "fluent" ? [fluent] : [new winston.transports.Console()];
+
+export { fluent, format, LOGS_LEVEL as level, transports };

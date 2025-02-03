@@ -1,6 +1,7 @@
+/* eslint-disable import/no-unresolved */
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
- * http://github.com/fonoster/plugin-funcs
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
+ * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
  *
@@ -16,56 +17,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import "../../config";
-import {Command, flags} from "@oclif/command";
-import {CLIError} from "@oclif/errors";
-import {ProjectGuard} from "../../decorators/project_guard";
-import {getProjectConfig} from "../../config";
-import type {Secret} from "@fonoster/secrets/dist/client/types";
+import * as SDK from "@fonoster/sdk";
+import { Flags } from "@oclif/core";
+import cliui from "cliui";
+import { AuthenticatedCommand } from "../../AuthenticatedCommand";
 
-// Using import will cause: Error: easy_table_1.default is not a constructor
-const Table = require("easy-table");
-const Secrets = require("@fonoster/secrets");
-
-export default class ListCommand extends Command {
-  static description = "list of the secrets you have access to";
-  static aliases = ["secrets:ls"];
-  static flags = {
-    size: flags.integer({
+export default class List extends AuthenticatedCommand<typeof List> {
+  static override readonly description =
+    "display all Secrets in the active Workspace";
+  static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
+  static override readonly flags = {
+    "page-size": Flags.string({
       char: "s",
-      default: 25,
-      description: "secrets of result per page"
+      description: "the number of items to show",
+      default: "1000",
+      required: false
     })
   };
 
-  @ProjectGuard()
-  async run() {
-    const {flags} = this.parse(ListCommand);
-    const secretsManager = new Secrets(getProjectConfig());
+  public async run(): Promise<void> {
+    const { flags } = await this.parse(List);
+    const client = await this.createSdkClient();
+    const secrets = new SDK.Secrets(client);
+    const response = await secrets.listSecrets({
+      pageSize: parseInt(flags["page-size"])
+    });
 
-    try {
-      const pageSize = flags.size;
-      let pageToken = "1";
+    const ui = cliui({ width: 100 });
 
-      const {secrets, nextPageToken} = await secretsManager.listSecrets({
-        pageSize,
-        pageToken
-      });
+    ui.div(
+      { text: "REF", padding: [0, 0, 0, 0], width: 40 },
+      { text: "NAME", padding: [0, 0, 0, 0], width: 40 }
+    );
 
-      pageToken = nextPageToken;
-
-      const table = new Table();
-
-      secrets.forEach((secret: Secret) => {
-        table.cell("Name", secret.name);
-        table.newRow();
-      });
-
-      console.log(
-        secrets.length ? table.toString() : "You haven’t created a Secret yet."
+    response.items.forEach((application) => {
+      ui.div(
+        { text: application.ref, padding: [0, 0, 0, 0], width: 40 },
+        { text: application.name, padding: [0, 0, 0, 0], width: 40 }
       );
-    } catch (e) {
-      throw new CLIError(e.message);
-    }
+    });
+
+    this.log(ui.toString());
   }
 }
