@@ -1,54 +1,52 @@
 {
   "name": "@fonoster/common",
-  "version": "0.3.17-alpha.3",
-  "description": "Common artifacts",
+  "version": "0.9.5",
+  "description": "Common library for Fonoster projects",
+  "author": "Pedro Sanders <psanders@fonoster.com>",
   "homepage": "https://github.com/fonoster/fonoster#readme",
-  "bugs": {
-    "url": "https://github.com/fonoster/fonoster/issues"
+  "license": "MIT",
+  "main": "dist/index",
+  "types": "dist/index",
+  "directories": {
+    "src": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "prebuild": "rimraf ./dist tsconfig.tsbuildinfo",
+    "build": "tsc -b tsconfig.json",
+    "postbuild": "cp -a src/protos dist",
+    "clean": "rimraf ./dist node_modules tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@fonoster/logger": "^0.9.0",
+    "@grpc/grpc-js": "~1.10.6",
+    "@grpc/proto-loader": "^0.7.12",
+    "@influxdata/influxdb-client": "^1.35.0",
+    "dotenv": "^16.4.7",
+    "grpc-health-check": "^2.0.2",
+    "handlebars": "^4.7.8",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "nodemailer": "^6.9.13",
+    "twilio": "^5.3.4",
+    "validator": "^13.12.0",
+    "zod-validation-error": "^3.3.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fonoster/fonoster.git"
   },
-  "license": "MIT",
-  "author": "Pedro Sanders <psanders@fonoster.com>",
-  "main": "dist/index",
-  "types": "dist/index",
-  "directories": {
-    "test": "test",
-    "src": "src"
+  "bugs": {
+    "url": "https://github.com/fonoster/fonoster/issues"
   },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "prebuild": "rimraf ./dist tsconfig.tsbuildinfo",
-    "build": "tsc -b tsconfig.json"
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.14"
   },
-  "dependencies": {
-    "@fonoster/certs": "^0.3.17-alpha.3",
-    "@fonoster/grpc-health-check": "^3.1.1",
-    "@fonoster/logger": "^0.3.17-alpha.3",
-    "@grpc/grpc-js": "^1.3.7",
-    "@grpc/proto-loader": "^0.7.2",
-    "@opentelemetry/api": "^1.0.4",
-    "@opentelemetry/exporter-jaeger": "^1.0.1",
-    "@opentelemetry/exporter-zipkin": "^1.0.1",
-    "@opentelemetry/instrumentation": "^0.27.0",
-    "@opentelemetry/instrumentation-express": "^0.27.0",
-    "@opentelemetry/instrumentation-grpc": "^0.27.0",
-    "@opentelemetry/instrumentation-http": "^0.27.0",
-    "@opentelemetry/resources": "^1.0.4",
-    "@opentelemetry/sdk-metrics-base": "0.27.0",
-    "@opentelemetry/sdk-trace-base": "^1.0.4",
-    "@opentelemetry/sdk-trace-node": "^1.0.4",
-    "@opentelemetry/semantic-conventions": "^1.0.4",
-    "atob": "^2.1.2",
-    "deepmerge": "^4.2.2",
-    "grpc-interceptors": "github:fonoster/node-grpc-interceptors"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "9834f90642e6603cb00ae0ec76ec798f74ed2135"
+  "gitHead": "d4aa82f7926c0f451d2f580c59ab812c74a7f579"
 }

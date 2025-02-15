@@ -1,24 +1,33 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "rootDir": ".",
+    "outDir": "./dist/node",
+    "strict": false,
+    "noImplicitAny": false, 
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
   },
-  "references": [
-    {"path": "../apps"},
-    {"path": "../auth"},
-    {"path": "../secrets"},
-    {"path": "../agents"},
-    {"path": "../funcs"},
-    {"path": "../storage"},
-    {"path": "../callmanager"},
-    {"path": "../logger"},
-    {"path": "../providers"},
-    {"path": "../numbers"},
-    {"path": "../domains"},
-    {"path": "../projects"},
-    {"path": "../users"},
-    {"path": "../monitor"}
+  "include": [
+    "src/**/*.ts"
   ],
-  "exclude": ["node_modules", "dist", "test"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "src/client/WebClient.ts",
+    "src/web.ts"
+  ],
+  "references": [
+    {
+      "path": "../types"
+    }
+  ]
 }

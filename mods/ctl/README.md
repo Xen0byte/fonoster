@@ -1,797 +1,1307 @@
-# ctl
+ctl
+=================
 
-Command-Line for for Fonoster
+Command-Line for Fonoster
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/ctl.svg)](https://npmjs.org/package/ctl)
-[![Downloads/week](https://img.shields.io/npm/dw/ctl.svg)](https://npmjs.org/package/ctl)
-[![License](https://img.shields.io/npm/l/ctl.svg)](https://github.com/fonoster/fonoster/blob/master/package.json)
+[![command-line tool](https://img.shields.io/badge/ctl-oclif-brightgreen.svg)](https://fonoster.com)
+[![Version](https://img.shields.io/npm/v/@fonoster/ctl.svg)](https://npmjs.org/package/@fonoster/voice)
+[![Downloads/week](https://img.shields.io/npm/dw/@fonoster/ctl.svg)](https://npmjs.org/package/@fonoster/voice)
+[![License](https://img.shields.io/npm/l/@fonoster/ctl.svg)](https://github.com/fonoster/fonoster/blob/main/package.json)
+
+Use this tool to manage your Fonoster resources from the command line. With this tool, you can create, update, and delete resources like Applications, Numbers, SIP Agents, and more.
+
+> When connecting to your own instance of Fonoster, remember to use your endpoint when login in. Also, remember to use the `--insecure` flag when connecting to a server with no TLS.
 
 <!-- toc -->
-* [ctl](#ctl)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
-
 # Usage
-
 <!-- usage -->
 ```sh-session
 $ npm install -g @fonoster/ctl
 $ fonoster COMMAND
 running command...
-$ fonoster (-v|--version|version)
-@fonoster/ctl/0.3.17-alpha.3 darwin-x64 node-v16.16.0
+$ fonoster (--version)
+@fonoster/ctl/0.9.6 darwin-arm64 node-v22.13.1
 $ fonoster --help [COMMAND]
 USAGE
   $ fonoster COMMAND
 ...
 ```
 <!-- usagestop -->
-
 # Commands
-
 <!-- commands -->
-* [`fonoster agents:create`](#fonoster-agentscreate)
-* [`fonoster agents:delete [REF]`](#fonoster-agentsdelete-ref)
-* [`fonoster agents:get [REF]`](#fonoster-agentsget-ref)
-* [`fonoster agents:list`](#fonoster-agentslist)
-* [`fonoster agents:update [REF]`](#fonoster-agentsupdate-ref)
-* [`fonoster apps:create`](#fonoster-appscreate)
-* [`fonoster apps:delete [REF]`](#fonoster-appsdelete-ref)
-* [`fonoster apps:list`](#fonoster-appslist)
-* [`fonoster apps:update [REF]`](#fonoster-appsupdate-ref)
-* [`fonoster auth:login`](#fonoster-authlogin)
-* [`fonoster auth:logout`](#fonoster-authlogout)
+* [`fonoster apikeys:create`](#fonoster-apikeyscreate)
+* [`fonoster apikeys:delete REF`](#fonoster-apikeysdelete-ref)
+* [`fonoster apikeys:list`](#fonoster-apikeyslist)
+* [`fonoster apikeys:regenerate REF`](#fonoster-apikeysregenerate-ref)
+* [`fonoster applications:create`](#fonoster-applicationscreate)
+* [`fonoster applications:delete REF`](#fonoster-applicationsdelete-ref)
+* [`fonoster applications:get REF`](#fonoster-applicationsget-ref)
+* [`fonoster applications:list`](#fonoster-applicationslist)
+* [`fonoster applications:update REF`](#fonoster-applicationsupdate-ref)
 * [`fonoster bug`](#fonoster-bug)
-* [`fonoster domains:create`](#fonoster-domainscreate)
-* [`fonoster domains:delete [REF]`](#fonoster-domainsdelete-ref)
-* [`fonoster domains:get [REF]`](#fonoster-domainsget-ref)
-* [`fonoster domains:list`](#fonoster-domainslist)
-* [`fonoster domains:update [REF]`](#fonoster-domainsupdate-ref)
 * [`fonoster feedback`](#fonoster-feedback)
-* [`fonoster help [COMMAND]`](#fonoster-help-command)
-* [`fonoster numbers:create`](#fonoster-numberscreate)
-* [`fonoster numbers:delete [REF]`](#fonoster-numbersdelete-ref)
-* [`fonoster numbers:get [REF]`](#fonoster-numbersget-ref)
-* [`fonoster numbers:list`](#fonoster-numberslist)
-* [`fonoster numbers:update [REF]`](#fonoster-numbersupdate-ref)
-* [`fonoster plugins`](#fonoster-plugins)
-* [`fonoster plugins:inspect PLUGIN...`](#fonoster-pluginsinspect-plugin)
-* [`fonoster plugins:install PLUGIN...`](#fonoster-pluginsinstall-plugin)
-* [`fonoster plugins:link PLUGIN`](#fonoster-pluginslink-plugin)
-* [`fonoster plugins:uninstall PLUGIN...`](#fonoster-pluginsuninstall-plugin)
-* [`fonoster plugins:update`](#fonoster-pluginsupdate)
-* [`fonoster projects:create`](#fonoster-projectscreate)
-* [`fonoster projects:delete [REF]`](#fonoster-projectsdelete-ref)
-* [`fonoster projects:get [REF]`](#fonoster-projectsget-ref)
-* [`fonoster projects:list`](#fonoster-projectslist)
-* [`fonoster projects:renew [REF]`](#fonoster-projectsrenew-ref)
-* [`fonoster projects:use [REF]`](#fonoster-projectsuse-ref)
-* [`fonoster providers:create`](#fonoster-providerscreate)
-* [`fonoster providers:delete [REF]`](#fonoster-providersdelete-ref)
-* [`fonoster providers:get [REF]`](#fonoster-providersget-ref)
-* [`fonoster providers:list`](#fonoster-providerslist)
-* [`fonoster providers:update [REF]`](#fonoster-providersupdate-ref)
-* [`fonoster secrets:create [NAME]`](#fonoster-secretscreate-name)
-* [`fonoster secrets:delete [NAME]`](#fonoster-secretsdelete-name)
+* [`fonoster secrets:create`](#fonoster-secretscreate)
+* [`fonoster secrets:delete REF`](#fonoster-secretsdelete-ref)
+* [`fonoster secrets:get REF`](#fonoster-secretsget-ref)
 * [`fonoster secrets:list`](#fonoster-secretslist)
+* [`fonoster secrets:update REF`](#fonoster-secretsupdate-ref)
+* [`fonoster sipnet:acls:create`](#fonoster-sipnetaclscreate)
+* [`fonoster sipnet:acls:delete REF`](#fonoster-sipnetaclsdelete-ref)
+* [`fonoster sipnet:acls:get REF`](#fonoster-sipnetaclsget-ref)
+* [`fonoster sipnet:acls:list`](#fonoster-sipnetaclslist)
+* [`fonoster sipnet:acls:update REF`](#fonoster-sipnetaclsupdate-ref)
+* [`fonoster sipnet:agents:create`](#fonoster-sipnetagentscreate)
+* [`fonoster sipnet:agents:delete REF`](#fonoster-sipnetagentsdelete-ref)
+* [`fonoster sipnet:agents:get REF`](#fonoster-sipnetagentsget-ref)
+* [`fonoster sipnet:agents:list`](#fonoster-sipnetagentslist)
+* [`fonoster sipnet:agents:update REF`](#fonoster-sipnetagentsupdate-ref)
+* [`fonoster sipnet:calls:create`](#fonoster-sipnetcallscreate)
+* [`fonoster sipnet:calls:get REF`](#fonoster-sipnetcallsget-ref)
+* [`fonoster sipnet:calls:list`](#fonoster-sipnetcallslist)
+* [`fonoster sipnet:credentials:create`](#fonoster-sipnetcredentialscreate)
+* [`fonoster sipnet:credentials:delete REF`](#fonoster-sipnetcredentialsdelete-ref)
+* [`fonoster sipnet:credentials:get REF`](#fonoster-sipnetcredentialsget-ref)
+* [`fonoster sipnet:credentials:list`](#fonoster-sipnetcredentialslist)
+* [`fonoster sipnet:credentials:update REF`](#fonoster-sipnetcredentialsupdate-ref)
+* [`fonoster sipnet:domains:create`](#fonoster-sipnetdomainscreate)
+* [`fonoster sipnet:domains:delete REF`](#fonoster-sipnetdomainsdelete-ref)
+* [`fonoster sipnet:domains:get REF`](#fonoster-sipnetdomainsget-ref)
+* [`fonoster sipnet:domains:list`](#fonoster-sipnetdomainslist)
+* [`fonoster sipnet:domains:update REF`](#fonoster-sipnetdomainsupdate-ref)
+* [`fonoster sipnet:numbers:create`](#fonoster-sipnetnumberscreate)
+* [`fonoster sipnet:numbers:delete REF`](#fonoster-sipnetnumbersdelete-ref)
+* [`fonoster sipnet:numbers:get REF`](#fonoster-sipnetnumbersget-ref)
+* [`fonoster sipnet:numbers:linkTwilioNumber`](#fonoster-sipnetnumberslinktwilionumber)
+* [`fonoster sipnet:numbers:list`](#fonoster-sipnetnumberslist)
+* [`fonoster sipnet:numbers:update REF`](#fonoster-sipnetnumbersupdate-ref)
+* [`fonoster sipnet:trunks:create`](#fonoster-sipnettrunkscreate)
+* [`fonoster sipnet:trunks:delete REF`](#fonoster-sipnettrunksdelete-ref)
+* [`fonoster sipnet:trunks:get REF`](#fonoster-sipnettrunksget-ref)
+* [`fonoster sipnet:trunks:list`](#fonoster-sipnettrunkslist)
+* [`fonoster sipnet:trunks:update REF`](#fonoster-sipnettrunksupdate-ref)
+* [`fonoster utils:autopilotTestsCases`](#fonoster-utilsautopilottestscases)
+* [`fonoster workspaces:active`](#fonoster-workspacesactive)
+* [`fonoster workspaces:list`](#fonoster-workspaceslist)
+* [`fonoster workspaces:login`](#fonoster-workspaceslogin)
+* [`fonoster workspaces:logout REF`](#fonoster-workspaceslogout-ref)
+* [`fonoster workspaces:use REF`](#fonoster-workspacesuse-ref)
 
-## `fonoster agents:create`
+## `fonoster apikeys:create`
 
-create a new Fonoster Agent
+create an API key for the active Workspace
 
 ```
 USAGE
-  $ fonoster agents:create
+  $ fonoster apikeys:create [-i] [-e <value>] [-r <value>]
+
+FLAGS
+  -e, --expiration=<value>  API Key expiration time in days(e.g. 10d) or months(e.g. 10m)
+  -i, --insecure            allow connections to a server with no TLS
+  -r, --role=<value>        [default: WORKSPACE_ADMIN] API Key role
 
 DESCRIPTION
-  ...
-     Create a new Fonoster Agent
+  create an API key for the active Workspace
+
+EXAMPLES
+  $ fonoster apikeys:create
 ```
 
-_See code: [dist/commands/agents/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/agents/create.js)_
+_See code: [dist/commands/apikeys/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/apikeys/create.js)_
 
-## `fonoster agents:delete [REF]`
+## `fonoster apikeys:delete REF`
 
-delete a Fonoster Agent
-
-```
-USAGE
-  $ fonoster agents:delete [REF]
-
-ALIASES
-  $ fonoster agents:del
-  $ fonoster agents:rm
-```
-
-_See code: [dist/commands/agents/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/agents/delete.js)_
-
-## `fonoster agents:get [REF]`
-
-get a Fonoster Agent
+delete an API key from the active Workspace
 
 ```
 USAGE
-  $ fonoster agents:get [REF]
-```
+  $ fonoster apikeys:delete REF [-i]
 
-_See code: [dist/commands/agents/get.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/agents/get.js)_
+ARGUMENTS
+  REF  the ApiKey to delete from the Workspace
 
-## `fonoster agents:list`
-
-list all Fonoster Agents you have access to
-
-```
-USAGE
-  $ fonoster agents:list
-
-OPTIONS
-  -s, --size=size  [default: 25] agent of result per page
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
 
 DESCRIPTION
-  ...
-     List all Fonoster Agents you have access to
+  delete an API key from the active Workspace
 
-ALIASES
-  $ fonoster agents:ls
+EXAMPLES
+  $ fonoster apikeys:delete
 ```
 
-_See code: [dist/commands/agents/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/agents/list.js)_
+_See code: [dist/commands/apikeys/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/apikeys/delete.js)_
 
-## `fonoster agents:update [REF]`
+## `fonoster apikeys:list`
 
-update a Fonoster Agent
+display all API keys in the active Workspace
 
 ```
 USAGE
-  $ fonoster agents:update [REF]
+  $ fonoster apikeys:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
 
 DESCRIPTION
-  ...
-     Update a Fonoster Agent
+  display all API keys in the active Workspace
+
+EXAMPLES
+  $ fonoster apikeys:list
 ```
 
-_See code: [dist/commands/agents/update.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/agents/update.js)_
+_See code: [dist/commands/apikeys/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/apikeys/list.js)_
 
-## `fonoster apps:create`
+## `fonoster apikeys:regenerate REF`
 
-create a new Fonoster App
+generate a new access key secret for an API key
 
 ```
 USAGE
-  $ fonoster apps:create
+  $ fonoster apikeys:regenerate REF [-i]
+
+ARGUMENTS
+  REF  the Application to update
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
 
 DESCRIPTION
-  ...
-     Create a new Fonoster App
+  generate a new access key secret for an API key
+
+EXAMPLES
+  $ fonoster apikeys:regenerate
 ```
 
-_See code: [dist/commands/apps/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/apps/create.js)_
+_See code: [dist/commands/apikeys/regenerate.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/apikeys/regenerate.js)_
 
-## `fonoster apps:delete [REF]`
+## `fonoster applications:create`
 
-delete a Fonoster Application
-
-```
-USAGE
-  $ fonoster apps:delete [REF]
-
-ALIASES
-  $ fonoster apps:del
-  $ fonoster apps:rm
-```
-
-_See code: [dist/commands/apps/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/apps/delete.js)_
-
-## `fonoster apps:list`
-
-list all Fonoster Apps you have access to
+add a new Application to the active Workspace
 
 ```
 USAGE
-  $ fonoster apps:list
+  $ fonoster applications:create [-i]
 
-OPTIONS
-  -s, --size=size  [default: 25] number of result per page
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
 
 DESCRIPTION
-  ...
-     List all Fonoster Apps you have access to
+  add a new Application to the active Workspace
 
-ALIASES
-  $ fonoster apps:ls
+EXAMPLES
+  $ fonoster applications:create
 ```
 
-_See code: [dist/commands/apps/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/apps/list.js)_
+_See code: [dist/commands/applications/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/applications/create.js)_
 
-## `fonoster apps:update [REF]`
+## `fonoster applications:delete REF`
 
-update a new Fonoster App
+delete an Application from the active Workspace
 
 ```
 USAGE
-  $ fonoster apps:update [REF]
+  $ fonoster applications:delete REF [-i]
+
+ARGUMENTS
+  REF  the Application to delete
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
 
 DESCRIPTION
-  ...
-     Update a new Fonoster App
+  delete an Application from the active Workspace
+
+EXAMPLES
+  $ fonoster applications:delete
 ```
 
-_See code: [dist/commands/apps/update.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/apps/update.js)_
+_See code: [dist/commands/applications/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/applications/delete.js)_
 
-## `fonoster auth:login`
+## `fonoster applications:get REF`
 
-log in to a Fonoster deployment
-
-```
-USAGE
-  $ fonoster auth:login
-```
-
-_See code: [dist/commands/auth/login.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/auth/login.js)_
-
-## `fonoster auth:logout`
-
-log out from a fonoster deployment
+retrieve details of an Application by reference
 
 ```
 USAGE
-  $ fonoster auth:logout
+  $ fonoster applications:get REF [-i]
+
+ARGUMENTS
+  REF  The Application to show details about
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  retrieve details of an Application by reference
+
+EXAMPLES
+  $ fonoster applications:get
 ```
 
-_See code: [dist/commands/auth/logout.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/auth/logout.js)_
+_See code: [dist/commands/applications/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/applications/get.js)_
+
+## `fonoster applications:list`
+
+display all Applications in the active Workspace
+
+```
+USAGE
+  $ fonoster applications:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all Applications in the active Workspace
+
+EXAMPLES
+  $ fonoster applications:list
+```
+
+_See code: [dist/commands/applications/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/applications/list.js)_
+
+## `fonoster applications:update REF`
+
+modify the configuration of an Application
+
+```
+USAGE
+  $ fonoster applications:update REF [-i]
+
+ARGUMENTS
+  REF  the Application to update
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  modify the configuration of an Application
+
+EXAMPLES
+  $ fonoster applications:update
+```
+
+_See code: [dist/commands/applications/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/applications/update.js)_
 
 ## `fonoster bug`
 
-start a bug report 🐞
+report a bug to the development team 🐞
 
 ```
 USAGE
   $ fonoster bug
 
 DESCRIPTION
-  ...
-     Opens github issues with a predefine bug template
+  report a bug to the development team 🐞
+
+EXAMPLES
+  $ fonoster bug
 ```
 
-_See code: [dist/commands/bug.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/bug.js)_
-
-## `fonoster domains:create`
-
-create a new Fonoster Domain
-
-```
-USAGE
-  $ fonoster domains:create
-
-DESCRIPTION
-  ...
-     Create a new Fonoster Domain
-```
-
-_See code: [dist/commands/domains/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/domains/create.js)_
-
-## `fonoster domains:delete [REF]`
-
-delete a Fonoster Domain
-
-```
-USAGE
-  $ fonoster domains:delete [REF]
-
-ALIASES
-  $ fonoster domains:del
-  $ fonoster domains:rm
-```
-
-_See code: [dist/commands/domains/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/domains/delete.js)_
-
-## `fonoster domains:get [REF]`
-
-get a Fonoster Domain
-
-```
-USAGE
-  $ fonoster domains:get [REF]
-```
-
-_See code: [dist/commands/domains/get.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/domains/get.js)_
-
-## `fonoster domains:list`
-
-list all Fonoster Domains you have access to
-
-```
-USAGE
-  $ fonoster domains:list
-
-OPTIONS
-  -s, --size=size  [default: 25] number of result per page
-
-DESCRIPTION
-  ...
-     List all Fonoster Domains you have access to
-
-ALIASES
-  $ fonoster domains:ls
-```
-
-_See code: [dist/commands/domains/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/domains/list.js)_
-
-## `fonoster domains:update [REF]`
-
-update a Fonoster Domain
-
-```
-USAGE
-  $ fonoster domains:update [REF]
-
-DESCRIPTION
-  ...
-     Update a Fonoster Domain
-```
-
-_See code: [dist/commands/domains/update.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/domains/update.js)_
+_See code: [dist/commands/bug.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/bug.js)_
 
 ## `fonoster feedback`
 
-let us know how we're doing
+provide feedback on your experience
 
 ```
 USAGE
   $ fonoster feedback
 
 DESCRIPTION
+  provide feedback on your experience
   ...
-     Help us improve by providing some feedback
-```
+  Help us improve by providing some feedback
 
-_See code: [dist/commands/feedback.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/feedback.js)_
-
-## `fonoster help [COMMAND]`
-
-display help for fonoster
-
-```
-USAGE
-  $ fonoster help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.3.1/src/commands/help.ts)_
-
-## `fonoster numbers:create`
-
-create a new Fonoster Number
-
-```
-USAGE
-  $ fonoster numbers:create
-
-DESCRIPTION
-  ...
-     Create a new Fonoster Number
-```
-
-_See code: [dist/commands/numbers/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/numbers/create.js)_
-
-## `fonoster numbers:delete [REF]`
-
-delete a Fonoster Number
-
-```
-USAGE
-  $ fonoster numbers:delete [REF]
-
-ALIASES
-  $ fonoster numbers:del
-  $ fonoster numbers:rm
-```
-
-_See code: [dist/commands/numbers/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/numbers/delete.js)_
-
-## `fonoster numbers:get [REF]`
-
-get a Fonoster Number
-
-```
-USAGE
-  $ fonoster numbers:get [REF]
-```
-
-_See code: [dist/commands/numbers/get.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/numbers/get.js)_
-
-## `fonoster numbers:list`
-
-list all Fonoster Numbers you have access to
-
-```
-USAGE
-  $ fonoster numbers:list
-
-OPTIONS
-  -s, --size=size  [default: 25] number of result per page
-
-DESCRIPTION
-  ...
-     List all Fonoster Numbers you have access to
-
-ALIASES
-  $ fonoster numbers:ls
-```
-
-_See code: [dist/commands/numbers/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/numbers/list.js)_
-
-## `fonoster numbers:update [REF]`
-
-update a Fonoster Number
-
-```
-USAGE
-  $ fonoster numbers:update [REF]
-
-DESCRIPTION
-  ...
-     Update a Fonoster Number
-```
-
-_See code: [dist/commands/numbers/update.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/numbers/update.js)_
-
-## `fonoster plugins`
-
-List installed plugins.
-
-```
-USAGE
-  $ fonoster plugins
-
-OPTIONS
-  --core  Show core plugins.
-
-EXAMPLE
-  $ fonoster plugins
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.6/src/commands/plugins/index.ts)_
-
-## `fonoster plugins:inspect PLUGIN...`
-
-Displays installation properties of a plugin.
-
-```
-USAGE
-  $ fonoster plugins:inspect PLUGIN...
-
-ARGUMENTS
-  PLUGIN  [default: .] Plugin to inspect.
-
-OPTIONS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-EXAMPLE
-  $ fonoster plugins:inspect myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.6/src/commands/plugins/inspect.ts)_
-
-## `fonoster plugins:install PLUGIN...`
-
-Installs a plugin into the CLI.
-
-```
-USAGE
-  $ fonoster plugins:install PLUGIN...
-
-ARGUMENTS
-  PLUGIN  Plugin to install.
-
-OPTIONS
-  -f, --force    Run yarn install with force flag.
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Can be installed from npm or a git url.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command 
-  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in 
-  the CLI without the need to patch and update the whole CLI.
-
-ALIASES
-  $ fonoster plugins:add
 
 EXAMPLES
-  $ fonoster plugins:install myplugin 
-  $ fonoster plugins:install https://github.com/someuser/someplugin
-  $ fonoster plugins:install someuser/someplugin
+  $ fonoster feedback
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.6/src/commands/plugins/install.ts)_
+_See code: [dist/commands/feedback.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/feedback.js)_
 
-## `fonoster plugins:link PLUGIN`
+## `fonoster secrets:create`
 
-Links a plugin into the CLI for development.
+add a new Secret to the active Workspace
 
 ```
 USAGE
-  $ fonoster plugins:link PLUGIN
+  $ fonoster secrets:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new Secret to the active Workspace
+
+EXAMPLES
+  $ fonoster secrets:create
+```
+
+_See code: [dist/commands/secrets/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/secrets/create.js)_
+
+## `fonoster secrets:delete REF`
+
+delete a Secret from the active Workspace
+
+```
+USAGE
+  $ fonoster secrets:delete REF [-i]
 
 ARGUMENTS
-  PATH  [default: .] path to plugin
+  REF  the Secret reference
 
-OPTIONS
-  -h, --help     Show CLI help.
-  -v, --verbose
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
 
 DESCRIPTION
-  Installation of a linked plugin will override a user-installed or core plugin.
+  delete a Secret from the active Workspace
 
-  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' 
-  command will override the user-installed or core plugin implementation. This is useful for development work.
-
-EXAMPLE
-  $ fonoster plugins:link myplugin
+EXAMPLES
+  $ fonoster secrets:delete
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.6/src/commands/plugins/link.ts)_
+_See code: [dist/commands/secrets/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/secrets/delete.js)_
 
-## `fonoster plugins:uninstall PLUGIN...`
+## `fonoster secrets:get REF`
 
-Removes a plugin from the CLI.
+retrieve details of a Secret by reference
 
 ```
 USAGE
-  $ fonoster plugins:uninstall PLUGIN...
+  $ fonoster secrets:get REF [-i]
 
 ARGUMENTS
-  PLUGIN  plugin to uninstall
+  REF  The Secret to show details about
 
-OPTIONS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-ALIASES
-  $ fonoster plugins:unlink
-  $ fonoster plugins:remove
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.6/src/commands/plugins/uninstall.ts)_
-
-## `fonoster plugins:update`
-
-Update installed plugins.
-
-```
-USAGE
-  $ fonoster plugins:update
-
-OPTIONS
-  -h, --help     Show CLI help.
-  -v, --verbose
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v2.1.6/src/commands/plugins/update.ts)_
-
-## `fonoster projects:create`
-
-create a new Fonoster Project
-
-```
-USAGE
-  $ fonoster projects:create
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
 
 DESCRIPTION
-  ...
-     Create a new Fonoster Project
+  retrieve details of a Secret by reference
+
+EXAMPLES
+  $ fonoster secrets:get
 ```
 
-_See code: [dist/commands/projects/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/projects/create.js)_
-
-## `fonoster projects:delete [REF]`
-
-delete a Fonoster Project
-
-```
-USAGE
-  $ fonoster projects:delete [REF]
-
-ALIASES
-  $ fonoster projects:del
-  $ fonoster projects:rm
-```
-
-_See code: [dist/commands/projects/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/projects/delete.js)_
-
-## `fonoster projects:get [REF]`
-
-get a Fonoster Project
-
-```
-USAGE
-  $ fonoster projects:get [REF]
-```
-
-_See code: [dist/commands/projects/get.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/projects/get.js)_
-
-## `fonoster projects:list`
-
-list all Fonoster Projects you have access to
-
-```
-USAGE
-  $ fonoster projects:list
-
-DESCRIPTION
-  ...
-     List all Fonoster Projects you have access to
-
-ALIASES
-  $ fonoster projects:ls
-```
-
-_See code: [dist/commands/projects/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/projects/list.js)_
-
-## `fonoster projects:renew [REF]`
-
-renew the credentials of a Fonoster Project
-
-```
-USAGE
-  $ fonoster projects:renew [REF]
-
-DESCRIPTION
-  ...
-     Renew the credentials of a Fonoster Project
-```
-
-_See code: [dist/commands/projects/renew.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/projects/renew.js)_
-
-## `fonoster projects:use [REF]`
-
-set a default Fonoster Project
-
-```
-USAGE
-  $ fonoster projects:use [REF]
-
-DESCRIPTION
-  ...
-     Set a default Fonoster Project
-```
-
-_See code: [dist/commands/projects/use.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/projects/use.js)_
-
-## `fonoster providers:create`
-
-create a new Fonoster Provider (trunk)
-
-```
-USAGE
-  $ fonoster providers:create
-
-DESCRIPTION
-  ...
-     Create a new Fonoster Provider
-```
-
-_See code: [dist/commands/providers/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/providers/create.js)_
-
-## `fonoster providers:delete [REF]`
-
-delete a Fonoster Provider
-
-```
-USAGE
-  $ fonoster providers:delete [REF]
-
-ALIASES
-  $ fonoster providers:del
-  $ fonoster providers:rm
-```
-
-_See code: [dist/commands/providers/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/providers/delete.js)_
-
-## `fonoster providers:get [REF]`
-
-get a Fonoster Provider
-
-```
-USAGE
-  $ fonoster providers:get [REF]
-```
-
-_See code: [dist/commands/providers/get.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/providers/get.js)_
-
-## `fonoster providers:list`
-
-list all Fonoster Providers you have access to
-
-```
-USAGE
-  $ fonoster providers:list
-
-OPTIONS
-  -s, --size=size  [default: 25] provider of result per page
-
-DESCRIPTION
-  ...
-     List all Fonoster Providers you have access to
-
-ALIASES
-  $ fonoster providers:ls
-```
-
-_See code: [dist/commands/providers/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/providers/list.js)_
-
-## `fonoster providers:update [REF]`
-
-update a Fonoster Provider
-
-```
-USAGE
-  $ fonoster providers:update [REF]
-
-DESCRIPTION
-  ...
-     Update a Fonoster Provider
-```
-
-_See code: [dist/commands/providers/update.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/providers/update.js)_
-
-## `fonoster secrets:create [NAME]`
-
-create a Fonoster secret.
-
-```
-USAGE
-  $ fonoster secrets:create [NAME]
-
-OPTIONS
-  -h, --help                       show CLI help
-  -l, --from-literal=from-literal  pass from literal
-  -s, --from-stdin                 pass from stdin
-```
-
-_See code: [dist/commands/secrets/create.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/secrets/create.js)_
-
-## `fonoster secrets:delete [NAME]`
-
-remove Fonoster secret
-
-```
-USAGE
-  $ fonoster secrets:delete [NAME]
-
-ALIASES
-  $ fonoster secrets:del
-  $ fonoster secrets:rm
-```
-
-_See code: [dist/commands/secrets/delete.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/secrets/delete.js)_
+_See code: [dist/commands/secrets/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/secrets/get.js)_
 
 ## `fonoster secrets:list`
 
-list of the secrets you have access to
+display all Secrets in the active Workspace
 
 ```
 USAGE
+  $ fonoster secrets:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all Secrets in the active Workspace
+
+EXAMPLES
   $ fonoster secrets:list
-
-OPTIONS
-  -s, --size=size  [default: 25] secrets of result per page
-
-ALIASES
-  $ fonoster secrets:ls
 ```
 
-_See code: [dist/commands/secrets/list.js](https://github.com/fonoster/fonoster/blob/v0.3.17-alpha.3/dist/commands/secrets/list.js)_
+_See code: [dist/commands/secrets/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/secrets/list.js)_
+
+## `fonoster secrets:update REF`
+
+modify the value or metadata of a Secret
+
+```
+USAGE
+  $ fonoster secrets:update REF [-i]
+
+ARGUMENTS
+  REF  the Secret to update
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  modify the value or metadata of a Secret
+
+EXAMPLES
+  $ fonoster secrets:update
+```
+
+_See code: [dist/commands/secrets/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/secrets/update.js)_
+
+## `fonoster sipnet:acls:create`
+
+create a new Access Control List (ACL)
+
+```
+USAGE
+  $ fonoster sipnet:acls:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  create a new Access Control List (ACL)
+
+EXAMPLES
+  $ fonoster sipnet:acls:create
+```
+
+_See code: [dist/commands/sipnet/acls/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/acls/create.js)_
+
+## `fonoster sipnet:acls:delete REF`
+
+remove an Access Control List (ACL) from the Workspace
+
+```
+USAGE
+  $ fonoster sipnet:acls:delete REF [-i]
+
+ARGUMENTS
+  REF  the ACL reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  remove an Access Control List (ACL) from the Workspace
+
+EXAMPLES
+  $ fonoster sipnet:acls:delete
+```
+
+_See code: [dist/commands/sipnet/acls/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/acls/delete.js)_
+
+## `fonoster sipnet:acls:get REF`
+
+get a specific Access Control List (ACL)
+
+```
+USAGE
+  $ fonoster sipnet:acls:get REF [-i]
+
+ARGUMENTS
+  REF  The ACL reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  get a specific Access Control List (ACL)
+
+EXAMPLES
+  $ fonoster sipnet:acls:get
+```
+
+_See code: [dist/commands/sipnet/acls/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/acls/get.js)_
+
+## `fonoster sipnet:acls:list`
+
+list all Access Control Lists (ACLs)
+
+```
+USAGE
+  $ fonoster sipnet:acls:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  list all Access Control Lists (ACLs)
+
+EXAMPLES
+  $ fonoster sipnet:acls:list
+```
+
+_See code: [dist/commands/sipnet/acls/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/acls/list.js)_
+
+## `fonoster sipnet:acls:update REF`
+
+update an existing Access Control List (ACL)
+
+```
+USAGE
+  $ fonoster sipnet:acls:update REF [-i]
+
+ARGUMENTS
+  REF  the ACL reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  update an existing Access Control List (ACL)
+
+EXAMPLES
+  $ fonoster sipnet:acls:update
+```
+
+_See code: [dist/commands/sipnet/acls/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/acls/update.js)_
+
+## `fonoster sipnet:agents:create`
+
+add a new SIP Agent to the network
+
+```
+USAGE
+  $ fonoster sipnet:agents:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new SIP Agent to the network
+
+EXAMPLES
+  $ fonoster sipnet:agents:create
+```
+
+_See code: [dist/commands/sipnet/agents/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/agents/create.js)_
+
+## `fonoster sipnet:agents:delete REF`
+
+delete a SIP Agent from the network
+
+```
+USAGE
+  $ fonoster sipnet:agents:delete REF [-i]
+
+ARGUMENTS
+  REF  the Agent reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  delete a SIP Agent from the network
+
+EXAMPLES
+  $ fonoster sipnet:agents:delete
+```
+
+_See code: [dist/commands/sipnet/agents/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/agents/delete.js)_
+
+## `fonoster sipnet:agents:get REF`
+
+retrieve details of a SIP Agent
+
+```
+USAGE
+  $ fonoster sipnet:agents:get REF [-i]
+
+ARGUMENTS
+  REF  The Agent reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  retrieve details of a SIP Agent
+
+EXAMPLES
+  $ fonoster sipnet:agents:get
+```
+
+_See code: [dist/commands/sipnet/agents/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/agents/get.js)_
+
+## `fonoster sipnet:agents:list`
+
+display all SIP Agents in the network
+
+```
+USAGE
+  $ fonoster sipnet:agents:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all SIP Agents in the network
+
+EXAMPLES
+  $ fonoster sipnet:agents:list
+```
+
+_See code: [dist/commands/sipnet/agents/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/agents/list.js)_
+
+## `fonoster sipnet:agents:update REF`
+
+add a new SIP Agent to the network
+
+```
+USAGE
+  $ fonoster sipnet:agents:update REF [-i]
+
+ARGUMENTS
+  REF  the ACL reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new SIP Agent to the network
+
+EXAMPLES
+  $ fonoster sipnet:agents:update
+```
+
+_See code: [dist/commands/sipnet/agents/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/agents/update.js)_
+
+## `fonoster sipnet:calls:create`
+
+initiate a call to a phone number or SIP URI
+
+```
+USAGE
+  $ fonoster sipnet:calls:create -f <value> -t <value> -a <value> [-i] [-o <value>] [-c]
+
+FLAGS
+  -a, --app-ref=<value>  (required) The application reference
+  -c, --track-call       Track the call
+  -f, --from=<value>     (required) The number to make the call from
+  -i, --insecure         allow connections to a server with no TLS
+  -o, --timeout=<value>  [default: 30] The call timeout
+  -t, --to=<value>       (required) The number to make the call to
+
+DESCRIPTION
+  initiate a call to a phone number or SIP URI
+
+EXAMPLES
+  $ fonoster sipnet:calls:create
+```
+
+_See code: [dist/commands/sipnet/calls/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/calls/create.js)_
+
+## `fonoster sipnet:calls:get REF`
+
+get a specific Access Control List (ACL)
+
+```
+USAGE
+  $ fonoster sipnet:calls:get REF [-i]
+
+ARGUMENTS
+  REF  The ACL reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  get a specific Access Control List (ACL)
+
+EXAMPLES
+  $ fonoster sipnet:calls:get
+```
+
+_See code: [dist/commands/sipnet/calls/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/calls/get.js)_
+
+## `fonoster sipnet:calls:list`
+
+display all calls made in the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:calls:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all calls made in the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:calls:list
+```
+
+_See code: [dist/commands/sipnet/calls/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/calls/list.js)_
+
+## `fonoster sipnet:credentials:create`
+
+add a new set of Credentials to the network
+
+```
+USAGE
+  $ fonoster sipnet:credentials:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new set of Credentials to the network
+
+EXAMPLES
+  $ fonoster sipnet:credentials:create
+```
+
+_See code: [dist/commands/sipnet/credentials/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/credentials/create.js)_
+
+## `fonoster sipnet:credentials:delete REF`
+
+delete a set of Credentials from the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:credentials:delete REF [-i]
+
+ARGUMENTS
+  REF  the Credentials reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  delete a set of Credentials from the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:credentials:delete
+```
+
+_See code: [dist/commands/sipnet/credentials/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/credentials/delete.js)_
+
+## `fonoster sipnet:credentials:get REF`
+
+retrieve details of a set of Credentials by reference
+
+```
+USAGE
+  $ fonoster sipnet:credentials:get REF [-i]
+
+ARGUMENTS
+  REF  The Credentials reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  retrieve details of a set of Credentials by reference
+
+EXAMPLES
+  $ fonoster sipnet:credentials:get
+```
+
+_See code: [dist/commands/sipnet/credentials/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/credentials/get.js)_
+
+## `fonoster sipnet:credentials:list`
+
+display all Credentials in the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:credentials:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all Credentials in the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:credentials:list
+```
+
+_See code: [dist/commands/sipnet/credentials/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/credentials/list.js)_
+
+## `fonoster sipnet:credentials:update REF`
+
+modify the values or metadata of a set of Credentials
+
+```
+USAGE
+  $ fonoster sipnet:credentials:update REF [-i]
+
+ARGUMENTS
+  REF  the Credentials reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  modify the values or metadata of a set of Credentials
+
+EXAMPLES
+  $ fonoster sipnet:credentials:update
+```
+
+_See code: [dist/commands/sipnet/credentials/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/credentials/update.js)_
+
+## `fonoster sipnet:domains:create`
+
+add a new Domain to the SIP network
+
+```
+USAGE
+  $ fonoster sipnet:domains:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new Domain to the SIP network
+
+EXAMPLES
+  $ fonoster sipnet:domains:create
+```
+
+_See code: [dist/commands/sipnet/domains/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/domains/create.js)_
+
+## `fonoster sipnet:domains:delete REF`
+
+delete a Domain from the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:domains:delete REF [-i]
+
+ARGUMENTS
+  REF  the Domain reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  delete a Domain from the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:domains:delete
+```
+
+_See code: [dist/commands/sipnet/domains/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/domains/delete.js)_
+
+## `fonoster sipnet:domains:get REF`
+
+retrieve details of a Domain by reference
+
+```
+USAGE
+  $ fonoster sipnet:domains:get REF [-i]
+
+ARGUMENTS
+  REF  The Domain reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  retrieve details of a Domain by reference
+
+EXAMPLES
+  $ fonoster sipnet:domains:get
+```
+
+_See code: [dist/commands/sipnet/domains/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/domains/get.js)_
+
+## `fonoster sipnet:domains:list`
+
+display all Domains in the SIP network
+
+```
+USAGE
+  $ fonoster sipnet:domains:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all Domains in the SIP network
+
+EXAMPLES
+  $ fonoster sipnet:domains:list
+```
+
+_See code: [dist/commands/sipnet/domains/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/domains/list.js)_
+
+## `fonoster sipnet:domains:update REF`
+
+modify the configuration of a Domain
+
+```
+USAGE
+  $ fonoster sipnet:domains:update REF [-i]
+
+ARGUMENTS
+  REF  the Domain reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  modify the configuration of a Domain
+
+EXAMPLES
+  $ fonoster sipnet:domains:update
+```
+
+_See code: [dist/commands/sipnet/domains/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/domains/update.js)_
+
+## `fonoster sipnet:numbers:create`
+
+add a new Number to the SIP network
+
+```
+USAGE
+  $ fonoster sipnet:numbers:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new Number to the SIP network
+
+EXAMPLES
+  $ fonoster sipnet:numbers:create
+```
+
+_See code: [dist/commands/sipnet/numbers/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/numbers/create.js)_
+
+## `fonoster sipnet:numbers:delete REF`
+
+delete a Number from the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:numbers:delete REF [-i]
+
+ARGUMENTS
+  REF  the Numbers's reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  delete a Number from the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:numbers:delete
+```
+
+_See code: [dist/commands/sipnet/numbers/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/numbers/delete.js)_
+
+## `fonoster sipnet:numbers:get REF`
+
+retrieve details of a Number by reference
+
+```
+USAGE
+  $ fonoster sipnet:numbers:get REF [-i]
+
+ARGUMENTS
+  REF  the Number to show details about
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  retrieve details of a Number by reference
+
+EXAMPLES
+  $ fonoster sipnet:numbers:get
+```
+
+_See code: [dist/commands/sipnet/numbers/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/numbers/get.js)_
+
+## `fonoster sipnet:numbers:linkTwilioNumber`
+
+associate a Twilio number with a Fonoster Application
+
+```
+USAGE
+  $ fonoster sipnet:numbers:linkTwilioNumber [-i] [-b <value>] [-a <value>]
+
+FLAGS
+  -a, --access-control-list=<value>  [default: 165.22.7.155/32] the access control list to allow (use if running your
+                                     Fonoster instance)
+  -b, --outbound-uri-base=<value>    [default: pstn.fonoster.com] the uri to point twilio to for outbound calls (use if
+                                     running your Fonoster instance)
+  -i, --insecure                     allow connections to a server with no TLS
+
+DESCRIPTION
+  associate a Twilio number with a Fonoster Application
+
+EXAMPLES
+  $ fonoster sipnet:numbers:linkTwilioNumber
+```
+
+_See code: [dist/commands/sipnet/numbers/linkTwilioNumber.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/numbers/linkTwilioNumber.js)_
+
+## `fonoster sipnet:numbers:list`
+
+display all Numbers in the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:numbers:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to return
+
+DESCRIPTION
+  display all Numbers in the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:numbers:list
+```
+
+_See code: [dist/commands/sipnet/numbers/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/numbers/list.js)_
+
+## `fonoster sipnet:numbers:update REF`
+
+modify the configuration of a Number
+
+```
+USAGE
+  $ fonoster sipnet:numbers:update REF [-i]
+
+ARGUMENTS
+  REF  the Number to update
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  modify the configuration of a Number
+
+EXAMPLES
+  $ fonoster sipnet:numbers:update
+```
+
+_See code: [dist/commands/sipnet/numbers/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/numbers/update.js)_
+
+## `fonoster sipnet:trunks:create`
+
+add a new Trunk to the SIP network
+
+```
+USAGE
+  $ fonoster sipnet:trunks:create [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  add a new Trunk to the SIP network
+
+EXAMPLES
+  $ fonoster sipnet:trunks:create
+```
+
+_See code: [dist/commands/sipnet/trunks/create.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/trunks/create.js)_
+
+## `fonoster sipnet:trunks:delete REF`
+
+remove a Trunk from the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:trunks:delete REF [-i]
+
+ARGUMENTS
+  REF  the Trunk's reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  remove a Trunk from the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:trunks:delete
+```
+
+_See code: [dist/commands/sipnet/trunks/delete.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/trunks/delete.js)_
+
+## `fonoster sipnet:trunks:get REF`
+
+retrieve details of a Trunk by reference
+
+```
+USAGE
+  $ fonoster sipnet:trunks:get REF [-i]
+
+ARGUMENTS
+  REF  The Trunk's reference
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  retrieve details of a Trunk by reference
+
+EXAMPLES
+  $ fonoster sipnet:trunks:get
+```
+
+_See code: [dist/commands/sipnet/trunks/get.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/trunks/get.js)_
+
+## `fonoster sipnet:trunks:list`
+
+display all Trunks in the active Workspace
+
+```
+USAGE
+  $ fonoster sipnet:trunks:list [-i] [-s <value>]
+
+FLAGS
+  -i, --insecure           allow connections to a server with no TLS
+  -s, --page-size=<value>  [default: 1000] the number of items to show
+
+DESCRIPTION
+  display all Trunks in the active Workspace
+
+EXAMPLES
+  $ fonoster sipnet:trunks:list
+```
+
+_See code: [dist/commands/sipnet/trunks/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/trunks/list.js)_
+
+## `fonoster sipnet:trunks:update REF`
+
+modify the configuration of a Trunk
+
+```
+USAGE
+  $ fonoster sipnet:trunks:update REF [-i]
+
+ARGUMENTS
+  REF  the Trunk to update
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  modify the configuration of a Trunk
+
+EXAMPLES
+  $ fonoster sipnet:trunks:update
+```
+
+_See code: [dist/commands/sipnet/trunks/update.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/sipnet/trunks/update.js)_
+
+## `fonoster utils:autopilotTestsCases`
+
+experimental command to test an Autopilot's behavior
+
+```
+USAGE
+  $ fonoster utils:autopilotTestsCases -f <value> [-i]
+
+FLAGS
+  -f, --file=<value>  (required) path to test cases file (json, yaml, or yml)
+  -i, --insecure      allow connections to a server with no TLS
+
+DESCRIPTION
+  experimental command to test an Autopilot's behavior
+
+EXAMPLES
+  $ fonoster utils:autopilotTestsCases -f assistant.json
+
+  $ fonoster utils:autopilotTestsCases -f assistant.yaml
+```
+
+_See code: [dist/commands/utils/autopilotTestsCases.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/utils/autopilotTestsCases.js)_
+
+## `fonoster workspaces:active`
+
+display the name of the active Workspace
+
+```
+USAGE
+  $ fonoster workspaces:active
+
+DESCRIPTION
+  display the name of the active Workspace
+
+EXAMPLES
+  $ fonoster workspaces:active
+```
+
+_See code: [dist/commands/workspaces/active.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/workspaces/active.js)_
+
+## `fonoster workspaces:list`
+
+display all linked Workspaces
+
+```
+USAGE
+  $ fonoster workspaces:list
+
+DESCRIPTION
+  display all linked Workspaces
+
+EXAMPLES
+  $ fonoster workspaces:list
+```
+
+_See code: [dist/commands/workspaces/list.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/workspaces/list.js)_
+
+## `fonoster workspaces:login`
+
+link a Workspace to the local environment
+
+```
+USAGE
+  $ fonoster workspaces:login [-i]
+
+FLAGS
+  -i, --insecure  allow connections to a server with no TLS
+
+DESCRIPTION
+  link a Workspace to the local environment
+
+EXAMPLES
+  $ fonoster workspaces:login
+```
+
+_See code: [dist/commands/workspaces/login.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/workspaces/login.js)_
+
+## `fonoster workspaces:logout REF`
+
+unlink a Workspace from the local environment
+
+```
+USAGE
+  $ fonoster workspaces:logout REF
+
+ARGUMENTS
+  REF  the Workspace to unlink from
+
+DESCRIPTION
+  unlink a Workspace from the local environment
+
+EXAMPLES
+  $ fonoster workspaces:logout
+```
+
+_See code: [dist/commands/workspaces/logout.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/workspaces/logout.js)_
+
+## `fonoster workspaces:use REF`
+
+set a Workspace as the default
+
+```
+USAGE
+  $ fonoster workspaces:use REF
+
+ARGUMENTS
+  REF  The Workspace to unlink from
+
+DESCRIPTION
+  set a Workspace as the default
+
+EXAMPLES
+  $ fonoster workspaces:use
+```
+
+_See code: [dist/commands/workspaces/use.js](https://github.com/fonoster/fonoster/blob/v0.9.6/dist/commands/workspaces/use.js)_
 <!-- commandsstop -->

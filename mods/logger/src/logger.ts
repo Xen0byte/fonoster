@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
+ * Copyright (C) 2023 by Fonoster Inc (https://fonoster.com)
  * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
@@ -18,7 +18,6 @@
  */
 import winston from "winston";
 import { fluent, format, level, transports } from "./envs";
-import { ULog } from "./types";
 
 const logger = winston.createLogger({
   levels: winston.config.npm.levels,
@@ -28,11 +27,11 @@ const logger = winston.createLogger({
 });
 
 logger.on("finish", () => {
-  fluent.sender.end("end", {}, () => { });
+  fluent.sender.end("end", {}, () => {});
 });
 
-const mute = () => logger.transports.forEach((t: any) => (t.silent = true));
+const mute = () => logger.transports.forEach((t) => (t.silent = true));
 
-const unmute = () => logger.transports.forEach((t: any) => (t.silent = false));
+const unmute = () => logger.transports.forEach((t) => (t.silent = false));
 
 export { logger as default, mute, unmute };

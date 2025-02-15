@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
  * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
@@ -16,31 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MeterProvider} from "@opentelemetry/sdk-metrics-base";
+import { VoiceRequest } from "@fonoster/common";
+import { VoiceResponse } from "./VoiceResponse";
 
-export interface VoiceRequest {
-  accessKeyId: string;
-  sessionToken: string;
-  sessionId: string;
-  dialbackEnpoint: string;
-  number: string;
-  callerId: string;
-  callerNumber: string;
-  selfEndpoint: string;
-  appRef?: string;
-}
+type VoiceHandler = (req: VoiceRequest, res: VoiceResponse) => Promise<void>;
 
-export interface ServerConfig {
+type ServerConfig = {
   bind?: string;
   port?: number;
-  base?: string;
-  pathToFiles?: string;
-  otlSpanExporters?: Array<any>;
-  meterProvider?: MeterProvider;
-}
+  identityAddress?: string;
+  skipIdentity?: boolean;
+};
 
-export interface VoiceEventData {
-  type: string;
-  sessionId: string;
-  data: any;
-}
+export { ServerConfig, VoiceHandler, VoiceRequest };

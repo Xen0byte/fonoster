@@ -1,68 +1,117 @@
 {
   "name": "root",
+  "version": "independent",
   "private": true,
+  "author": "Pedro Sanders <psanders@fonoster.com>",
   "license": "MIT",
+  "description": "Then open-source alternative to Twilio",
+  "main": "dist/index",
+  "types": "dist/index",
+  "workspaces": [
+    "mods/*"
+  ],
   "scripts": {
-    "make": "npm i rimraf && npm run clean && npm i && npm run bootstrap && npm run build",
-    "bootstrap": "lerna bootstrap --no-ci --hoist",
-    "test": "cross-env NODE_ENV=dev nyc --reporter=lcov mocha -r ts-node/register mods/**/*.unit.test.ts --exit",
-    "integration": "cross-env NODE_ENV=dev nyc --reporter=lcov mocha --timeout 220000 -r ts-node/register mods/**/*.int.test.ts --exit",
+    "start:webui": "NODE_ENV=dev cd mods/webui && npm start",
+    "start:storybook": "NODE_ENV=dev cd mods/webui && npm run storybook",
+    "start:apiserver": "cross-env NODE_ENV=dev LOGS_LEVEL=verbose nodemon --watch mods/apiserver mods/apiserver/src/index.ts",
+    "start:authz": "cross-env NODE_ENV=dev LOGS_LEVEL=verbose nodemon --watch mods/authz mods/authz/src/server/server.ts",
+    "start:voice": "cross-env NODE_ENV=dev LOGS_LEVEL=verbose nodemon --watch mods/voice mods/voice/src/demo.ts",
+    "start:autopilot": "cross-env NODE_ENV=dev ASSISTANT=$(pwd)/config/assistant.json LOGS_LEVEL=verbose nodemon --watch mods/autopilot mods/autopilot/src/server.ts",
+    "start:services": "cross-env docker compose -f compose.yaml -f compose.dev.yaml up routr nats envoy influxdb postgres adminer mailhog rtpengine asterisk simplephone -d --remove-orphans",
+    "start:sdk-demo": "npx serve -s mods/sdk/public -l 9000",
+    "start:oauth2-demo": "npx serve mods/sdk/public -l 9000",
+    "start:audiosocket": "cross-env NODE_ENV=dev LOGS_LEVEL=verbose nodemon --watch mods/streams mods/streams/src/example.ts",
+    "stop:services": "cross-env docker compose -f compose.yaml -f compose.dev.yaml down",
     "build": "lerna run build",
-    "clean": "rimraf .nyc_output **/*/tsconfig.tsbuildinfo dist coverage **/*/dist **/*/node_modules \"node_modules/!(rimraf|.bin)\"",
-    "lint": "eslint mods --ext .ts --fix",
-    "format": "prettier --write mods",
-    "check-types": "tsc --noEmit",
-    "start": "cross-env NODE_ENV=dev nodemon .scripts/services",
-    "start:dispatcher": "cross-env NODE_ENV=dev nodemon .scripts/dispatcher",
-    "gen:protos": "./.scripts/gen_code_proto.sh",
-    "gen:docs": "node ./.scripts/gen_docs.js",
-    "audit": "lerna-audit",
+    "prebuild": "npm run generate:prisma-clients",
+    "postbuild": "npm run copy:hbstemplates && npm run copy:prisma-clients",
+    "format": "prettier --write mods/**/src",
+    "clean": "rimraf mods/**/dist mods/**/node_modules mods/**/package-lock.json node_modules package-lock.json",
+    "prepare": "husky",
+    "copy:hbstemplates": "node .scripts/copy-hbs.js",
+    "db:migrate": "npx prisma migrate dev --schema mods/apiserver/schema.prisma --name changeme --preview-feature && npx prisma migrate dev --schema mods/identity/schema.prisma --name changeme --preview-feature",
+    "db:seed": "tsx mods/apiserver/src/core/seed.ts",
+    "generate:docs": "node .scripts/gen-docs.js",
+    "generate:readme": "lerna run generate:readme && git add mods/**/README.md",
+    "generate:keypair": ".scripts/gen-keypair.sh",
+    "generate:protos": ".scripts/gen-code-proto.sh",
+    "postgenerate:protos": "lerna run build",
+    "generate:prisma-clients": "npx prisma generate --schema mods/apiserver/schema.prisma && npx prisma generate --schema mods/identity/schema.prisma",
+    "copy:prisma-clients": "sh ./.scripts/copy-prisma-clients.sh",
+    "check:updates": "lerna exec -- npx npm-check-updates",
+    "test": "cross-env LOGS_LEVEL=none NODE_ENV=dev mocha --timeout 30000 mods/**/*.test.ts",
+    "pretest": ".scripts/check-preconditions.sh && npm run generate:keypair",
+    "integration": "cross-env LOGS_LEVEL=none NODE_ENV=dev mocha --slow 50000 --timeout 10000 mods/**/node.integration.ts",
+    "preintegration:web": "npx playwright install && npx playwright install-deps",
+    "integration:web": "web-test-runner --node-resolve --playwright --browsers chromium webkit firefox",
+    "release": "lerna publish --yes --no-git-reset --dist-tag next $(./.scripts/next-release.sh) --message \"chore(release): publish %s [skip ci]\"",
+    "release:prerelease": "lerna publish --dist-tag next",
+    "release:frompackages": "lerna publish from-package",
     "bump:version": "rimraf mods/**/.lerna-changed-buster-* && lerna exec -- touch .lerna-changed-buster-$RANDOM",
-    "publish": "lerna publish",
-    "publish:prerelease": "lerna publish prerelease --dist-tag next"
+    "postinstall": "npm run generate:prisma-clients"
+  },
+  "prisma": {
+    "seed": "tsx mods/apiserver/src/core/seed.ts"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.2.2",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@types/chai": "^5.0.1",
+    "@types/chai-as-promised": "^8.0.1",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.12.7",
+    "@types/sinon": "^17.0.3",
+    "@types/sinon-chai": "^4.0.0",
+    "@types/webrtc": "^0.0.44",
+    "chai-as-promised": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "globals": "^15.13.0",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "grpc-tools": "^1.12.4",
+    "husky": "^9.0.11",
+    "jsdoc-to-markdown": "^8.0.1",
+    "lerna": "^8.1.9",
+    "mocha": "^11.0.2",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
+    "prisma": "^6.1.0",
+    "rimraf": "^6.0.1",
+    "sinon": "^19.0.2",
+    "sinon-chai": "^4.0.0",
+    "tsx": "^4.19.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fonoster/fonoster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fonoster/fonoster/issues"
   },
   "nodemonConfig": {
     "watch": [
-      "./mods"
+      "mods/**"
     ],
     "ext": "ts",
-    "exec": "ts-node",
+    "exec": "tsx",
     "ignore": "**/*.d.ts"
   },
-  "devDependencies": {
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^15.14.9",
-    "@typescript-eslint/eslint-plugin": "^4.19.0",
-    "@typescript-eslint/parser": "^4.19.0",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "cross-env": "^7.0.3",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.23.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-no-loops": "^0.3.0",
-    "eslint-plugin-notice": "^0.9.10",
-    "eslint-plugin-prettier": "^3.3.1",
-    "grpc_tools_node_protoc_ts": "5.2.2",
-    "grpc-tools": "1.11.1",
-    "husky": "^6.0.0",
-    "jsdoc-to-markdown": "^7.0.1",
-    "jsonfile": "^6.1.0",
-    "lerna": "^4.0.0",
-    "lerna-audit": "^1.3.3",
-    "mocha": "^9.2.1",
-    "nodemon": "^2.0.7",
-    "nyc": "^15.1.0",
-    "prettier": "^2.3.0",
-    "rimraf": "^3.0.2",
-    "sinon": "^9.0.1",
-    "sinon-chai": "^3.5.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.5.4"
+  "directories": {
+    "src": "src",
+    "test": "test"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.11.1"
   },
   "dependencies": {
-    "axios": "^0.24.0",
-    "colors": "^1.4.0"
+    "@prisma/client": "^6.3.1"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-arm64-gnu": "^4.29.1",
+    "@rollup/rollup-linux-arm64-musl": "^4.29.1",
+    "@rollup/rollup-linux-x64-gnu": "^4.29.1",
+    "@rollup/rollup-linux-x64-musl": "^4.29.1"
   }
 }

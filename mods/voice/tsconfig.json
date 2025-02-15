@@ -1,15 +1,16 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "references": [
-    {"path": "../tts"},
-    {"path": "../logger"},
-    {"path": "../events"},
-    {"path": "../common"},
-    {"path": "../googleasr"}
+    {
+      "path": "../logger",
+    },
+    {
+      "path": "../common",
+    }
   ],
   "exclude": ["node_modules", "dist", "test"]
 }

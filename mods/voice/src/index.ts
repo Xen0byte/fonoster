@@ -1,5 +1,6 @@
+#!/usr/bin/env node
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
+ * Copyright (C) 2025 by Fonoster Inc (https://fonoster.com)
  * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
@@ -16,15 +17,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {VoiceRequest} from "./types";
-import VoiceServer from "./server";
-import VoiceResponse from "./voice";
-import {SGatherStream} from "./sgather/types";
-import {PlaybackControl} from "./playback/playback";
+import {
+  AzureVoice,
+  AzureVoiceDetails,
+  GatherSource,
+  GoogleVoice,
+  GoogleVoiceDetails,
+  StreamGatherSource
+} from "@fonoster/common";
+import VoiceServer from "./VoiceServer";
+
+export default VoiceServer;
+export * from "./VoiceResponse";
+export * from "./types";
 export {
-  VoiceResponse,
-  VoiceRequest,
-  VoiceServer,
-  PlaybackControl,
-  SGatherStream
+  AzureVoice,
+  AzureVoiceDetails,
+  GatherSource,
+  GoogleVoice,
+  GoogleVoiceDetails,
+  StreamGatherSource
 };

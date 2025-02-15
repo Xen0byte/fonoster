@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 by Fonoster Inc (https://fonoster.com)
+ * Copyright (C) 2023 by Fonoster Inc (https://fonoster.com)
  * http://github.com/fonoster/fonoster
  *
  * This file is part of Fonoster
@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ULogType } from "./types";
-import getLogger from "./get_logger";
-import ulogger from "./user_logger";
+import { getLogger } from "./getLogger";
 import logger, { mute, unmute } from "./logger";
+import { ULogType } from "./types";
+import ulogger from "./userLogger";
 
-export { logger as default, getLogger, ulogger, ULogType, mute, unmute };
+export { ULogType, logger as default, getLogger, mute, ulogger, unmute };
